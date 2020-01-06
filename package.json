@@ -1,0 +1,29 @@
+{
+  "name": "infordata-sync",
+  "version": "1.0.0",
+  "description": "Infordata sync app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emagombe/infordata-sync.git"
+  },
+  "author": "Edson Magombe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emagombe/infordata-sync/issues"
+  },
+  "homepage": "https://github.com/emagombe/infordata-sync#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "electron": "^7.1.7",
+    "node-fetch": "^2.6.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.1.2"
+  }
+}
