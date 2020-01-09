@@ -1,19 +1,47 @@
+const path = require('path');
+
 const electron = require('electron');
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const FileSystem = require('./controller/fileSystem.js');
+const dateFormat = require('dateformat');
+
+const EventListener = require('./controller/EventListener.js');
+const Core = require('./core.js');
 
 
 app.on('ready', () => {
-	// const win = new BrowserWindow({
-	// 	width: 800,
-	//     height: 600,
-	//     webPreferences: {
-	//     	nodeIntegration: true
-	//     }
-	// });
-	// win.loadFile(path.join(__dirname) + '/pages/index.html');
 
-	//console.log(FileSystem.getMyDocFolder());
-	FileSystem.watch();
+	if(EventListener.begin()) {
+		EventListener.watcher.on('add', (path, stats) => {
+			Core.addItem({
+				eventType: 'add',
+				path: path,
+				stats: stats,
+				last_modify_date: {
+					time: dateFormat(new Date(stats.mtime).getTime(), 'HH:MM:ss'),
+					time_ms: dateFormat(new Date(stats.mtime).getTime(), 'HH:MM:ss:L'),
+					date: dateFormat(new Date(stats.mtime).getTime(), 'isoDate'),
+				},
+			});
+		});
+		EventListener.watcher.on('change', (path, stats) => {
+			Core.addItem({
+				eventType: 'change',
+				path: path,
+				stats: stats,
+				last_modify_date: {
+					time: dateFormat(new Date(stats.mtime).getTime(), 'HH:MM:ss'),
+					time_ms: dateFormat(new Date(stats.mtime).getTime(), 'HH:MM:ss:L'),
+					date: dateFormat(new Date(stats.mtime).getTime(), 'isoDate'),
+				},
+			});
+		});
+		EventListener.watcher.on('unlink', (path) => {
+			Core.addItem({
+				eventType: 'unlink',
+				path: path,
+			});
+		});
+	} else {
+		console.log('failed to start EventListener');
+	}
 });

@@ -1,44 +1,67 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
+
+const FileManager = require('./FileManager.js');
 const config = require('../config.js');
-const { URLSearchParams } = require('url');
 
 const basename = config.ajax.BASE_DOMAIN + ":" + config.ajax.PORT + config.ajax.DEFAULT_PATHNAME;
 
 class Sync {
 
-	static query = [];
-
-	static get_file_content() {
-		console.log();
-	}
-
-	static send = async (info) => {
-		let done = false;
-
+	static send = (info, callback) => {
 		if(typeof info !== 'undefined') {
+			let interval = null;
 
-			const path = info.path;
+			const filename = info.path.split(config.syncFolder)[1];
+			let count = 1;
 
-			const params = new URLSearchParams();
-			
-			params.append('date', `${info.last_modify_date.date} ${info.last_modify_date.time}`);
-			params.append('filename', `${info.filename}`);
-			params.append('blob', '');
+			const upload = () => {
+				let ready = FileManager.isFileReady(info.path);
+				
+				if(ready.done) {
+				    callback(null);
+			    	clearInterval(interval);
 
-			await fetch(`${basename}endpoint/file/sync.php`, {
-				method: 'post',
-				body: params,
-				headers: {
-					'Content-Type' : 'application/json',
-				},
-			}).then(async (res) => await res.json()).then(json => {
-				console.log(json);
-				done = true;
-			}).catch(err => {
-				console.log("That following error occorred => ", err);
-			});
+				// 	axios({
+				// 		url: `${basename}endpoint/file/sync.php`,
+				// 		method: 'post',
+				// 		data: {
+				// 			path: info.path,
+				// 			date: (typeof info.last_modify_date != 'undefined') ? `${info.last_modify_date.date} ${info.last_modify_date.time}` : '',
+				// 			filename: `${filename}`,
+				// 			blob: FileManager.get_file_content(info.path).toString(),
+				// 		},
+				// 		onUploadProgress: (e) => {
+
+				// 		},
+				// 		onDownloadProgress: (e) => {
+
+				// 		}
+				// 	}).then(response => {
+				// 		console.log(response.data);
+				// 		callback(response);
+				// 	}).catch(error => {
+				// 		console.log("That following error occorred => ", error);
+				// 		clearInterval(interval);
+				// 	}).finally(() => {
+				// 		clearInterval(interval);
+				// 	});
+				} else {
+					if(!ready.exists) {
+						callback(null);
+						clearInterval(interval);
+						console.log('does not exist');
+					} else {
+						console.log(`Some thing went wrong uploading file! Retrying ${count} time... `);
+						if(count > 10) {
+							console.log(`Giving up for ${filename}! Tried ${count} times`);
+							clearInterval(interval);
+						} else { count ++; }
+					}
+				}
+			};
+
+			interval = setInterval(() => { upload(); }, 1000);
 		}
-		return done;
 	};
 }
 
