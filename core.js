@@ -1,5 +1,6 @@
 const Sync = require('./controller/Sync.js');
 const Ftp = require('./controller/Ftp.js');
+const Helper = require('./controller/Helper.js');
 
 class Core {
 
@@ -49,25 +50,14 @@ class Core {
 	};
 
 	static getAll = () => {
-		Ftp.run(client => {
-			client.list((error, list) => {
-				console.log(list);
-			});
-			client.put(info.path, filename, true, error => {
-				if(error) {
-					console.log(error);
-				}
-		    });
-		});
 		return this.query;
 	};
 
 	static begin_sync = () => {
 		if(this.query.length > 0) {
-			for(let i = 0; i < this.query.length; i ++) {
-				Sync.send(this.query[i], (response) => {
-					delete this.query[i];
-				});
+			while(this.query.length != 0) {
+				Sync.send(this.query[0]);
+				this.query = Helper.array_delete_item(this.query, 0);
 			}
 		}
 	};

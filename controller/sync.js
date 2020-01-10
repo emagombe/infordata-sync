@@ -1,5 +1,8 @@
 const axios = require('axios');
+const fs = require('fs');
+var archiver = require('archiver');
 
+const Ftp = require('./Ftp.js');
 const FileManager = require('./FileManager.js');
 const config = require('../config.js');
 
@@ -7,60 +10,30 @@ const basename = config.ajax.BASE_DOMAIN + ":" + config.ajax.PORT + config.ajax.
 
 class Sync {
 
-	static send = (info, callback) => {
+	static send = (info) => {
 		if(typeof info !== 'undefined') {
-			let interval = null;
+			let count = 1; /* counts the number of times it tries to manage file */
+			/* File upload */
+			
+			const filename = info.path.split(config.syncZipFolder)[1];
+			const uploadfile = fs.createReadStream(info.path);
+			const fileStat = fs.statSync(info.path);
+			let uploadedSize = 0;
 
-			const filename = info.path.split(config.syncFolder)[1];
-			let count = 1;
-
-			const upload = () => {
-				let ready = FileManager.isFileReady(info.path);
-				
-				if(ready.done) {
-				    callback(null);
-			    	clearInterval(interval);
-
-				// 	axios({
-				// 		url: `${basename}endpoint/file/sync.php`,
-				// 		method: 'post',
-				// 		data: {
-				// 			path: info.path,
-				// 			date: (typeof info.last_modify_date != 'undefined') ? `${info.last_modify_date.date} ${info.last_modify_date.time}` : '',
-				// 			filename: `${filename}`,
-				// 			blob: FileManager.get_file_content(info.path).toString(),
-				// 		},
-				// 		onUploadProgress: (e) => {
-
-				// 		},
-				// 		onDownloadProgress: (e) => {
-
-				// 		}
-				// 	}).then(response => {
-				// 		console.log(response.data);
-				// 		callback(response);
-				// 	}).catch(error => {
-				// 		console.log("That following error occorred => ", error);
-				// 		clearInterval(interval);
-				// 	}).finally(() => {
-				// 		clearInterval(interval);
-				// 	});
-				} else {
-					if(!ready.exists) {
-						callback(null);
-						clearInterval(interval);
-						console.log('does not exist');
-					} else {
-						console.log(`Some thing went wrong uploading file! Retrying ${count} time... `);
-						if(count > 10) {
-							console.log(`Giving up for ${filename}! Tried ${count} times`);
-							clearInterval(interval);
-						} else { count ++; }
-					}
-				}
-			};
-
-			interval = setInterval(() => { upload(); }, 1000);
+			FileManager.ready(info.path, () => {
+				Ftp.run(client => {
+					uploadfile.on('data', function(buffer) {
+				        let segmentLength = buffer.length;
+				        uploadedSize += segmentLength;
+				        console.log(`Uploading [${filename.substring(1, filename.length)}]:\t ${((uploadedSize / fileStat.size * 100).toFixed(2))}%`);
+				    });
+					client.put(uploadfile, filename.substring(1, filename.length), false, error => {
+						if(error) {
+							console.log('The following error occorred => ', error);
+						}
+				    });
+			    });
+			});
 		}
 	};
 }

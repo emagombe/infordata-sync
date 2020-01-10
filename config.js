@@ -15,6 +15,7 @@ const config = {
 		keepalive: 10000,
 	},
 	syncFolder: process.env.USERPROFILE + '\\Documents' + '\\infordataSync',
+	syncZipFolder: process.env.USERPROFILE + '\\Documents' + '\\infordataSyncZip',
 };
 
 module.exports = config;
