@@ -1,5 +1,7 @@
 const fs = require('fs');
 var archiver = require('archiver');
+
+const Logger = require('./Logger.js');
 const config = require('../config.js');
 
 class FileManager {
@@ -8,11 +10,13 @@ class FileManager {
 	static isFileBusy = (path) => {
 		try {
 			const content = fs.readFileSync(path);
-			return { done: true, msg: '', content: content };
+			return { done: true, msg: '', content: content, exists: true };
 		} catch(error) {
 			if(error && error.code == 'EBUSY') {
+				Logger.write(`Resource [${path}] is busy! Waiting until it gets ready!`);
 				return { done: false, msg: `Resource [${path}] is busy! Waiting until it gets ready!`, exists: true };
-			} else if (error && error.code === 'ENOENT') {
+			} else if (error && error.code == 'ENOENT') {
+				Logger.write(`Resource [${path}] was deleted!`);
 				return { done: false, msg: `Resource [${path}] was deleted!`, exists: false };
 			} else {
 				return { done: true, msg: '', content: content, exists: true };
@@ -33,11 +37,10 @@ class FileManager {
 			} else {
 				if(!ready.exists) {
 					clearInterval(interval);
-					console.log('does not exist');
 				} else {
-					console.log(`Some thing went wrong uploading file! Retrying ${count} time... `);
+					Logger.write(`Some thing went wrong uploading file! Retrying ${count} time... `);
 					if(count > 10) {
-						console.log(`Giving up for ${filename}! Tried ${count} times`);
+						Logger.write(`Giving up for ${filename}! Tried ${count} times`);
 						clearInterval(interval);
 					} else { count ++; }
 				}
@@ -57,7 +60,7 @@ class FileManager {
 			});
 
 			archive.on('error', function(err) {
-				console.log(`Error archiving file => `, err);
+				Logger.write(`Error archiving file => ${err}`);
 				status = false;
 			});
 

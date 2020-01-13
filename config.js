@@ -1,4 +1,3 @@
-
 const config = {
 	ajax: {
 		BASE_DOMAIN: 'http://192.168.1.6',
@@ -15,7 +14,8 @@ const config = {
 		keepalive: 10000,
 	},
 	syncFolder: process.env.USERPROFILE + '\\Documents' + '\\infordataSync',
-	syncZipFolder: process.env.USERPROFILE + '\\Documents' + '\\infordataSyncZip',
+	syncZipFolder: 'temp',
+	log: 'app.log'
 };
 
 module.exports = config;

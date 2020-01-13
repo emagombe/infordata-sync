@@ -25,11 +25,15 @@ class Sync {
 					uploadfile.on('data', function(buffer) {
 				        let segmentLength = buffer.length;
 				        uploadedSize += segmentLength;
-				        console.log(`Uploading [${filename.substring(1, filename.length)}]:\t ${((uploadedSize / fileStat.size * 100).toFixed(2))}%`);
+				        Logger.write(`Uploading [${filename.substring(1, filename.length)}]:\t ${((uploadedSize / fileStat.size * 100).toFixed(2))}%`);
 				    });
 					client.put(uploadfile, filename.substring(1, filename.length), false, error => {
 						if(error) {
-							console.log('The following error occorred => ', error);
+							Logger.write(`The following error occorred => ${error}`);
+						} else {
+							fs.unlink(info.path, (_error) => {
+								if(_error) { Logger.write(`Failed to delete file [${filename.substring(1, filename.length)}] => `); } 
+							});
 						}
 				    });
 			    });
