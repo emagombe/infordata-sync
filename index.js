@@ -10,7 +10,7 @@ const Core = require('./core.js');
 const config = require('./config.js');
 
 
-app.on('ready', () => {
+const start_app = () => {
 	if(EventListener.begin()) {
 		EventListener.watcher.on('add', (path, stats) => {
 			FileManager.ready(path, () => {
@@ -43,4 +43,19 @@ app.on('ready', () => {
 	} else {
 		Logger.write('failed to start EventListener');
 	}
+};
+
+app.on('ready', () => {
+	// Create the browser window.
+	let win = new BrowserWindow({
+		width: 800,
+		height: 600,
+	    webPreferences: {
+	    	nodeIntegration: true
+	    }
+	});
+
+	// and load the index.html of the app.
+	win.loadFile('./pages/index.html');
+	start_app();
 });
