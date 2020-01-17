@@ -3,12 +3,12 @@ const path = require('path');
 module.exports = {
 	mode: "development", // "production" | "development" | "none"
 	entry: {
-		app: path.resolve(__dirname, 'src/index.jsx'), // string | object | array
+		app: path.resolve(__dirname, 'front-src/index.jsx'), // string | object | array
 	},
 	output: {
 		publicPath: '/',
-		filename: 'index.js',
-		path: path.resolve(__dirname, "dist"), // string
+		filename: 'app.js',
+		path: path.resolve(__dirname, "windows"), // string
 	},
 	module: {
 		rules: [

@@ -56,6 +56,6 @@ app.on('ready', () => {
 	});
 
 	// and load the index.html of the app.
-	win.loadFile('./pages/index.html');
+	win.loadFile('./windows/index.html');
 	start_app();
 });
