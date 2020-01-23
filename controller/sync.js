@@ -6,6 +6,8 @@ const Ftp = require('./Ftp.js');
 const FileManager = require('./FileManager.js');
 const config = require('../config.js');
 
+const Logger = require('./Logger.js');
+
 const basename = config.ajax.BASE_DOMAIN + ":" + config.ajax.PORT + config.ajax.DEFAULT_PATHNAME;
 
 class Sync {

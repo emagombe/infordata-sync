@@ -1,17 +1,17 @@
 {
   "name": "infordata-sync",
   "version": "1.0.0",
-  "description": "Infordata sync app",
+  "description": "Infordata backup sync",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "build": "electron-builder",
     "jsbuild": "webpack --mode=production",
-    "dev": "webpack --watch"
+    "dev": "webpack --watch --mode=development"
   },
   "build": {
-    "appId": "infordata backup sync",
+    "appId": "Infordata backup sync",
     "win": {
       "requestedExecutionLevel": "highestAvailable"
     }
@@ -20,7 +20,7 @@
     "type": "git",
     "url": "git+https://github.com/emagombe/infordata-sync.git"
   },
-  "author": "Edson Magombe",
+  "author": "Infordata Lda",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/emagombe/infordata-sync/issues"
@@ -35,7 +35,7 @@
     "@babel/runtime": "^7.8.3",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
-    "electron": "^7.1.7",
+    "electron": "^7.1.9",
     "electron-builder": "^21.2.0",
     "file-loader": "^4.2.0",
     "style-loader": "^1.0.0",
@@ -44,6 +44,8 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.9.0",
+    "@material-ui/icons": "^4.5.1",
     "archiver": "^3.1.1",
     "chokidar": "^3.3.1",
     "dateformat": "^3.0.3",
@@ -51,7 +53,8 @@
     "mssql": "^6.0.1",
     "node-windows": "^0.1.14",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "react-router-dom": "^5.1.2"
   },
   "optionalDependencies": {
     "fsevents": "^2.1.2"

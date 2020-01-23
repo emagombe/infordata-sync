@@ -53,25 +53,36 @@ class FileManager {
 
 		if(files != [] && zip_name) {
 			let status = true;
-			// create a file to stream archive data to.
-			const output = fs.createWriteStream(config.syncZipFolder + '\\' + zip_name);
-			const archive = archiver('zip', {
-				zlib: { level: 9 } // Sets the compression level.
+			/* Check if folder exists */
+			fs.promises.access(config.syncZipFolder).then(() => {
+				// create a file to stream archive data to.
+				const output = fs.createWriteStream(config.syncZipFolder + '\\' + zip_name);
+				const archive = archiver('zip', {
+					zlib: { level: 9 } // Sets the compression level.
+				});
+
+				archive.on('error', function(err) {
+					Logger.write(`Error archiving file => ${err}`);
+					status = false;
+				});
+
+				/* Creating the zip file */
+				archive.pipe(output);
+
+				for(let i = 0; i < files.length; i ++) {
+					/* Adding file to zip */
+					archive.file(files[i].path, { name: files[i].filename });
+				}
+				archive.finalize();
+			}).catch(() => {
+				fs.mkdir(config.syncZipFolder, error => {
+					if(error) {
+						Logger.write(`Failed to create dir 'Permission denied' => ${error}`);
+					} else {
+						this.compress(files, zip_name);
+					}
+				});
 			});
-
-			archive.on('error', function(err) {
-				Logger.write(`Error archiving file => ${err}`);
-				status = false;
-			});
-
-			/* Creating the zip file */
-			archive.pipe(output);
-
-			for(let i = 0; i < files.length; i ++) {
-				/* Adding file to zip */
-				archive.file(files[i].path, { name: files[i].filename });
-			}
-			archive.finalize();
 
 			return status;
 		} else {

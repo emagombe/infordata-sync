@@ -48,8 +48,10 @@ const start_app = () => {
 app.on('ready', () => {
 	// Create the browser window.
 	let win = new BrowserWindow({
+		center: true,
 		width: 800,
 		height: 600,
+		frame: false,
 	    webPreferences: {
 	    	nodeIntegration: true
 	    }
