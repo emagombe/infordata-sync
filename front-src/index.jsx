@@ -19,7 +19,6 @@ const noselect = {
 	MozUserSelect: 'none', /* Old versions of Firefox */
 	MsUserSelect: 'none', /* Internet Explorer/Edge */
 	UserSelect: 'none', /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
-	color: 'red',
 };
 
 /* Application theme */
@@ -36,6 +35,7 @@ const theme = createMuiTheme({
 
 /* Application Components */
 import './styles/index';
+import Home from './components/home';
 
 class App extends Component {
 
@@ -49,10 +49,7 @@ class App extends Component {
 				<ThemeProvider theme={ theme } >
 					<Switch>
 						<Route path="/">
-							<h1>Infordata - Backup Sync</h1>
-						</Route>
-						<Route path="/home">
-							<h1>Home</h1>
+							<Home />
 						</Route>
 					</Switch>
 				</ThemeProvider>

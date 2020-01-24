@@ -10,6 +10,8 @@ const Logger = require('./Logger.js');
 
 const basename = config.ajax.BASE_DOMAIN + ":" + config.ajax.PORT + config.ajax.DEFAULT_PATHNAME;
 
+const { ipcMain } = require('electron');
+
 class Sync {
 
 	static send = (info) => {
@@ -27,6 +29,9 @@ class Sync {
 					uploadfile.on('data', function(buffer) {
 				        let segmentLength = buffer.length;
 				        uploadedSize += segmentLength;
+				        ipcMain.once('uploading', (event, arg) => {
+							event.send('uploading', `Uploading [${filename.substring(1, filename.length)}]:\t ${((uploadedSize / fileStat.size * 100).toFixed(2))}%`);
+						});
 				        Logger.write(`Uploading [${filename.substring(1, filename.length)}]:\t ${((uploadedSize / fileStat.size * 100).toFixed(2))}%`);
 				    });
 					client.put(uploadfile, filename.substring(1, filename.length), false, error => {
