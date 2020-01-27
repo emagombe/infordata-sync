@@ -15,7 +15,8 @@ const config = {
 	},
 	syncFolder: process.env.USERPROFILE + '\\Documents' + '\\infordataSync',
 	syncZipFolder: 'temp',
-	log: 'app.log'
+	log: 'app.log',
+	task: 'task.json',
 };
 
 module.exports = config;
