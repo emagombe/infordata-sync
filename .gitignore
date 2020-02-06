@@ -106,3 +106,6 @@ dist
 # Custom ignores
 temp
 app.log
+task.json
+~
+daemon
