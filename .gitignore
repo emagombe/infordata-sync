@@ -104,5 +104,9 @@ dist
 .tern-port
 
 # Custom ignores
+daemon
 temp
+~
 app.log
+task.json
+perm

@@ -62,13 +62,7 @@ class Home extends Component {
 	componentDidMount() {
 		ipcRenderer.send('connect', 1);
 		ipcRenderer.on('connected', (event, arg) => {
-			console.log(event, arg);
-		});
-		ipcRenderer.on('uploading', (event, arg) => {
-			if(arg) {
-				this.setState({ uploading: arg });
-				ipcRenderer.send('uploading', 1);
-			}
+			this.setState({ uploading: arg });
 		});
 	}
 
@@ -78,37 +72,35 @@ class Home extends Component {
 
 		return (
 			<div className={ classes.root }>
-				<AppBar position="fixed" className={ classes.appbar }>
-					<div>
-						<Grid
-						  container
-						  direction="row"
-						  justify="space-between"
-						  alignItems="flex-start"
-						  className={ classes.primarybar }
-						>
-							<Typography variant="subtitle2" className={ classes.apptitle }>
-								iData- Backup Sync
-							</Typography>
-							<div>
-								<IconButton
-									style={{ ...nodrag }}
-									onClick={ e => {
-										remote.getCurrentWindow().minimize();
-									}}
-								>
-									<RemoveIcon />
-								</IconButton>
-								<IconButton
-									style={{ ...nodrag }}
-									onClick={ e => { window.close() }}
-								>
-									<CloseIcon />
-								</IconButton>
-							</div>
-						</Grid>
-					</div>
-				</AppBar>
+				<div className={ classes.appbar }>
+					<Grid
+					  container
+					  direction="row"
+					  justify="space-between"
+					  alignItems="flex-start"
+					  className={ classes.primarybar }
+					>
+						<Typography variant="subtitle2" className={ classes.apptitle }>
+							iData- Backup Sync
+						</Typography>
+						<div>
+							<IconButton
+								style={{ ...nodrag }}
+								onClick={ e => {
+									remote.getCurrentWindow().minimize();
+								}}
+							>
+								<RemoveIcon />
+							</IconButton>
+							<IconButton
+								style={{ ...nodrag }}
+								onClick={ e => { window.close() }}
+							>
+								<CloseIcon />
+							</IconButton>
+						</div>
+					</Grid>
+				</div>
 				<div style={{ marginTop: 60 }}>
 					<Grid
 					  container

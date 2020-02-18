@@ -53,6 +53,7 @@ class FileManager {
 
 		if(files != [] && zip_name) {
 			let status = true;
+			let status2 = true;
 			/* Check if folder exists */
 			fs.promises.access(config.syncZipFolder).then(() => {
 				// create a file to stream archive data to.
@@ -83,8 +84,37 @@ class FileManager {
 					}
 				});
 			});
+			fs.promises.access(config.syncZipFolderPermanent).then(() => {
+				// create a file to stream archive data to.
+				const output = fs.createWriteStream(config.syncZipFolderPermanent + '\\' + zip_name);
+				const archive = archiver('zip', {
+					zlib: { level: 9 } // Sets the compression level.
+				});
 
-			return status;
+				archive.on('error', function(err) {
+					Logger.write(`Error archiving file => ${err}`);
+					status2 = false;
+				});
+
+				/* Creating the zip file */
+				archive.pipe(output);
+
+				for(let i = 0; i < files.length; i ++) {
+					/* Adding file to zip */
+					archive.file(files[i].path, { name: files[i].filename });
+				}
+				archive.finalize();
+			}).catch(() => {
+				fs.mkdir(config.syncZipFolderPermanent, error => {
+					if(error) {
+						Logger.write(`Failed to create dir 'Permission denied' => ${error}`);
+					} else {
+						this.compress(files, zip_name);
+					}
+				});
+			});
+
+			return (status && status2);
 		} else {
 			return false;
 		}

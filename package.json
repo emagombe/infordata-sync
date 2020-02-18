@@ -14,6 +14,10 @@
     "appId": "Infordata backup sync",
     "win": {
       "requestedExecutionLevel": "highestAvailable"
+    },
+    "electronDownload": {
+      "mirror": "http://127.0.0.1/",
+      "cache":"~/.cache/electron/"
     }
   },
   "repository": {
