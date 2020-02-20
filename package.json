@@ -12,6 +12,19 @@
   },
   "build": {
     "appId": "Infordata backup sync",
+    "win": {
+      "extraFiles": [
+        "config.json"
+      ],
+      "files": [
+        "**/node_modules/**/*",
+        "index.js",
+        "controller/**/*",
+        "service.js",
+        "config.js",
+        "core.js"
+      ]
+    },
     "electronDownload": {
       "mirror": "http://127.0.0.1/",
       "cache":"~/.cache/electron/"

@@ -28,6 +28,7 @@ class FileManager {
 	static ready = (path, callback) => {
 
 		let interval = null;
+		let count = 0;
 		
 		const run = () => {
 			let ready = this.isFileBusy(path);
@@ -39,7 +40,7 @@ class FileManager {
 					clearInterval(interval);
 				} else {
 					Logger.write(`Some thing went wrong uploading file! Retrying ${count} time... `);
-					if(count > 10) {
+					if(count > 60) {
 						Logger.write(`Giving up for ${filename}! Tried ${count} times`);
 						clearInterval(interval);
 					} else { count ++; }
